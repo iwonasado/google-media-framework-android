@@ -314,6 +314,14 @@ public class SimpleVideoPlayer {
   }
 
   /**
+   * Set the timeout duration before hiding player controls after they are shown.
+   * @param timeoutInMilliseconds Timeout duration in milliseconds
+   */
+  public void setHideTimeout(int timeoutInMilliseconds) {
+    playbackControlLayer.setHideTimeout(timeoutInMilliseconds);
+  }
+
+  /**
    * Returns whether the player should be playing (based on whether the user has
    * tapped pause or play). This can be used by other classes to look at the playback control
    * layer's play/pause state and force the player to play or pause accordingly.

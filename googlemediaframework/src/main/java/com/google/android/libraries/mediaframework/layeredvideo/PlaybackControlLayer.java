@@ -380,6 +380,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   private boolean alwaysShowActionButtons;
 
+  /**
+   * How long to show the playback controls before hiding them, in milliseconds.
+   */
+  private int hideTimeout;
+
   public PlaybackControlLayer(String videoTitle) {
     this(videoTitle, null);
   }
@@ -390,6 +395,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     this.fullscreenCallback = fullscreenCallback;
     this.shouldBePlaying = false;
     this.alwaysShowActionButtons = false;
+    this.hideTimeout = DEFAULT_TIMEOUT_MS;
     actionButtons = new ArrayList<ImageButton>();
   }
 
@@ -665,7 +671,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    * the screen.
    */
   public void show() {
-    show(DEFAULT_TIMEOUT_MS);
+    show(hideTimeout);
   }
 
   /**
@@ -833,6 +839,14 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   }
 
   /**
+   * Set the timeout duration before hiding player controls after they are shown.
+   * @param timeoutInMilliseconds Timeout duration in milliseconds
+   */
+  public void setHideTimeout(int timeoutInMilliseconds) {
+    hideTimeout = timeoutInMilliseconds;
+  }
+
+  /**
    * Perform binding to UI, setup of event handlers and initialization of values.
    */
   private void setupView() {
@@ -854,7 +868,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       @Override
       public void onClick(View view) {
         togglePlayPause();
-        show(DEFAULT_TIMEOUT_MS);
+        show(hideTimeout);
       }
     });
 
@@ -866,7 +880,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       @Override
       public void onClick(View view) {
         doToggleFullscreen();
-        show(DEFAULT_TIMEOUT_MS);
+        show(hideTimeout);
         updateActionButtons();
         updateColors();
       }
@@ -904,7 +918,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
         isSeekbarDragging = false;
         updateProgress();
         updatePlayPauseButton();
-        show(DEFAULT_TIMEOUT_MS);
+        show(hideTimeout);
 
         handler.sendEmptyMessage(SHOW_PROGRESS);
       }
