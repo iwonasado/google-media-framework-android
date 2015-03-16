@@ -305,6 +305,15 @@ public class SimpleVideoPlayer {
   }
 
   /**
+   * Set whether or not to always show the full bar of action buttons.
+   * @param alwaysShow If true, the player will always show all action buttons. If false,
+   *                   the player will use an overflow menu when not fullscreen
+   */
+  public void setShowActionButtons(boolean alwaysShow) {
+    playbackControlLayer.setShowActionButtons(alwaysShow);
+  }
+
+  /**
    * Returns whether the player should be playing (based on whether the user has
    * tapped pause or play). This can be used by other classes to look at the playback control
    * layer's play/pause state and force the player to play or pause accordingly.

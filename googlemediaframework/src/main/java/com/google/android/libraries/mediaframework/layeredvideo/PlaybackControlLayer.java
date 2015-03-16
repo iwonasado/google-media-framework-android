@@ -375,6 +375,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   private FrameLayout view;
 
+  /**
+   * Whether or not to always show all action buttons.
+   */
+  private boolean alwaysShowActionButtons;
+
   public PlaybackControlLayer(String videoTitle) {
     this(videoTitle, null);
   }
@@ -384,6 +389,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     this.canSeek = true;
     this.fullscreenCallback = fullscreenCallback;
     this.shouldBePlaying = false;
+    this.alwaysShowActionButtons = false;
     actionButtons = new ArrayList<ImageButton>();
   }
 
@@ -817,6 +823,16 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   }
 
   /**
+   * Set whether or not to always show the full bar of action buttons.
+   * @param alwaysShow If true, the player will always show all action buttons. If false,
+   *                   the player will use an overflow menu when not fullscreen
+   */
+  public void setShowActionButtons(boolean alwaysShow) {
+    alwaysShowActionButtons = alwaysShow;
+    updateActionButtons();
+  }
+
+  /**
    * Perform binding to UI, setup of event handlers and initialization of values.
    */
   private void setupView() {
@@ -945,7 +961,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   public void updateActionButtons() {
     actionButtonsContainer.removeAllViews();
 
-    if (isFullscreen) {
+    if (isFullscreen || alwaysShowActionButtons) {
       for (ImageButton imageButton : actionButtons) {
         actionButtonsContainer.addView(imageButton);
       }
