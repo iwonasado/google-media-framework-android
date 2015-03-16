@@ -24,6 +24,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
@@ -192,6 +193,36 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    * Used by the {@link MessageHandler} to indicate that media controls should update progress bar.
    */
   private static final int SHOW_PROGRESS = 2;
+
+  /**
+   * System UI flags to use in default, non-fullscreen mode
+   */
+  private static final int SYSTEM_UI_FLAGS_DEFAULT = 0;
+
+  /**
+   * System UI flags to use in fullscreen mode
+   */
+  private static final int SYSTEM_UI_FLAGS_FULLSCREEN;
+  static {
+      int flags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+          | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+          | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+          | View.SYSTEM_UI_FLAG_FULLSCREEN;
+
+      // Enable immersive mode on Lollipop (API 21)
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        flags ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+      }
+      SYSTEM_UI_FLAGS_FULLSCREEN = flags;
+  }
+
+  /**
+   * System UI flags to use in fullscreen mode when controls are shown
+   */
+  private static final int SYSTEM_UI_FLAGS_FULLSCREEN_FORCE_SHOW =
+      View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+
 
   /**
    * List of image buttons which are displayed in the right side of the top chrome.
@@ -524,7 +555,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
       // Make the status bar and navigation bar visible again.
-      activity.getWindow().getDecorView().setSystemUiVisibility(0);
+      activity.getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAGS_DEFAULT);
 
       container.setLayoutParams(originalContainerLayoutParams);
 
@@ -535,8 +566,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       fullscreenCallback.onGoToFullscreen();
       activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
-      activity.getWindow().getDecorView().setSystemUiVisibility(
-          View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
+      activity.getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAGS_FULLSCREEN);
 
       // Whenever the status bar and navigation bar appear, we want the playback controls to
       // appear as well.
@@ -615,7 +645,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
               // controls are hidden.
               if (isFullscreen) {
                 getLayerManager().getActivity().getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
+                    SYSTEM_UI_FLAGS_FULLSCREEN);
               }
               handler.removeMessages(SHOW_PROGRESS);
               isVisible = false;
@@ -658,6 +688,12 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     updatePlayPauseButton();
 
     handler.sendEmptyMessage(SHOW_PROGRESS);
+
+    // If in fullscreen mode and under API 21, force system UI to show
+    if (isFullscreen && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+      getLayerManager().getActivity().getWindow().getDecorView().setSystemUiVisibility(
+          SYSTEM_UI_FLAGS_FULLSCREEN_FORCE_SHOW);
+    }
 
     Message msg = handler.obtainMessage(FADE_OUT);
     handler.removeMessages(FADE_OUT);
