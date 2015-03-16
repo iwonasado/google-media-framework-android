@@ -771,7 +771,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     if (fullscreenButton != null && fullscreenCallback != null) {
       fullscreenButton.setVisibility(View.VISIBLE);
     } else if (fullscreenButton != null && fullscreenCallback == null) {
-      fullscreenButton.setVisibility(View.INVISIBLE);
+      fullscreenButton.setVisibility(View.GONE);
     }
   }
 
@@ -843,7 +843,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     });
 
     if (fullscreenCallback == null) {
-      fullscreenButton.setVisibility(View.INVISIBLE);
+      fullscreenButton.setVisibility(View.GONE);
     }
     // Go into fullscreen when the fullscreen button is clicked.
     fullscreenButton.setOnClickListener(new View.OnClickListener() {
