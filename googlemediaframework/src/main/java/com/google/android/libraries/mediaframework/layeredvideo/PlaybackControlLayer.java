@@ -412,6 +412,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   private boolean alwaysShowActionButtons;
 
   /**
+   * Whether or not to allow screen rotation while in fullscreen mode
+   */
+  private boolean allowFullscreenModeRotation;
+
+  /**
    * How long to show the playback controls before hiding them, in milliseconds.
    */
   private int hideTimeout;
@@ -426,6 +431,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     this.fullscreenCallback = fullscreenCallback;
     this.shouldBePlaying = false;
     this.alwaysShowActionButtons = false;
+    this.allowFullscreenModeRotation = false;
     this.hideTimeout = DEFAULT_TIMEOUT_MS;
     actionButtons = new ArrayList<ImageButton>();
   }
@@ -564,7 +570,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       isFullscreen = false;
     } else {
       fullscreenCallback.onGoToFullscreen();
-      activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+      if (allowFullscreenModeRotation) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+      } else {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+      }
 
       activity.getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAGS_FULLSCREEN);
 
@@ -820,8 +830,8 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   }
 
   /**
-   * Set the visibility of the fullscreen button
-   * @param show Set to true to show button, false to hide it
+   * Set the visibility of the fullscreen button.
+   * @param show If true, show the fullscreen mode button. If false, hide it.
    */
   public void setFullscreenButtonVisibility(boolean show) {
     if (fullscreenButton != null) {
@@ -831,6 +841,15 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
         fullscreenButton.setVisibility(View.GONE);
       }
     }
+  }
+
+  /**
+   * Set whether or not to allow fullscreen mode screen rotation .
+   * @param allowRotation If true, allows screen rotation when in fullscreen mode. If false, lock
+   *                      screen orientation into landscape mode.
+   */
+  public void setFullscreenModeRotation(boolean allowRotation) {
+    allowFullscreenModeRotation = allowRotation;
   }
 
   /**
