@@ -203,6 +203,14 @@ public class SimpleVideoPlayer {
   }
 
   /**
+   * Set the visibility of the fullscreen button
+   * @param show Set to true to show button, false to hide it
+   */
+  public void setFullscreenButtonVisibility(boolean show) {
+    playbackControlLayer.setFullscreenButtonVisibility(show);
+  }
+
+  /**
    * When mutliple surface layers are used (ex. in the case of ad playback), one layer must be
    * overlaid on top of another. This method sends this player's surface layer to the background
    * so that other surface layers can be overlaid on top of it.

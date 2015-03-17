@@ -816,10 +816,20 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   public void setFullscreenCallback(FullscreenCallback fullscreenCallback) {
     this.fullscreenCallback = fullscreenCallback;
-    if (fullscreenButton != null && fullscreenCallback != null) {
-      fullscreenButton.setVisibility(View.VISIBLE);
-    } else if (fullscreenButton != null && fullscreenCallback == null) {
-      fullscreenButton.setVisibility(View.GONE);
+    setFullscreenButtonVisibility(fullscreenCallback != null);
+  }
+
+  /**
+   * Set the visibility of the fullscreen button
+   * @param show Set to true to show button, false to hide it
+   */
+  public void setFullscreenButtonVisibility(boolean show) {
+    if (fullscreenButton != null) {
+      if (show) {
+        fullscreenButton.setVisibility(View.VISIBLE);
+      } else {
+        fullscreenButton.setVisibility(View.GONE);
+      }
     }
   }
 
