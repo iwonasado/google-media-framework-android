@@ -202,19 +202,10 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   /**
    * System UI flags to use in fullscreen mode
    */
-  private static final int SYSTEM_UI_FLAGS_FULLSCREEN;
-  static {
-      int flags = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-          | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-          | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-          | View.SYSTEM_UI_FLAG_FULLSCREEN;
-
-      // Enable immersive mode on Lollipop (API 21)
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        flags ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-      }
-      SYSTEM_UI_FLAGS_FULLSCREEN = flags;
-  }
+  private static final int SYSTEM_UI_FLAGS_FULLSCREEN = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+      | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+      | View.SYSTEM_UI_FLAG_FULLSCREEN;
 
   /**
    * System UI flags to use in fullscreen mode when controls are shown
@@ -417,6 +408,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   private boolean allowFullscreenModeRotation;
 
   /**
+   * Enable immersive mode, available only for Android 4.4+ (API 19+)
+   */
+  private boolean enableImmersiveMode;
+
+  /**
    * How long to show the playback controls before hiding them, in milliseconds.
    */
   private int hideTimeout;
@@ -432,6 +428,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     this.shouldBePlaying = false;
     this.alwaysShowActionButtons = false;
     this.allowFullscreenModeRotation = false;
+    this.enableImmersiveMode = false;
     this.hideTimeout = DEFAULT_TIMEOUT_MS;
     actionButtons = new ArrayList<ImageButton>();
   }
@@ -576,7 +573,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
       }
 
-      activity.getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAGS_FULLSCREEN);
+      activity.getWindow().getDecorView().setSystemUiVisibility(
+          enableImmersiveMode ? SYSTEM_UI_FLAGS_FULLSCREEN ^ View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+              : SYSTEM_UI_FLAGS_FULLSCREEN);
 
       // Whenever the status bar and navigation bar appear, we want the playback controls to
       // appear as well.
@@ -655,7 +654,8 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
               // controls are hidden.
               if (isFullscreen) {
                 getLayerManager().getActivity().getWindow().getDecorView().setSystemUiVisibility(
-                    SYSTEM_UI_FLAGS_FULLSCREEN);
+                    enableImmersiveMode ? SYSTEM_UI_FLAGS_FULLSCREEN ^ View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        : SYSTEM_UI_FLAGS_FULLSCREEN);
               }
               handler.removeMessages(SHOW_PROGRESS);
               isVisible = false;
@@ -699,8 +699,8 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
 
     handler.sendEmptyMessage(SHOW_PROGRESS);
 
-    // If in fullscreen mode and under API 21, force system UI to show
-    if (isFullscreen && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+    // If in fullscreen mode and not in immersive mode, force system UI to show
+    if (isFullscreen && !enableImmersiveMode) {
       getLayerManager().getActivity().getWindow().getDecorView().setSystemUiVisibility(
           SYSTEM_UI_FLAGS_FULLSCREEN_FORCE_SHOW);
     }
@@ -844,12 +844,21 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   }
 
   /**
-   * Set whether or not to allow fullscreen mode screen rotation .
+   * Set whether or not to allow fullscreen mode screen rotation.
    * @param allowRotation If true, allows screen rotation when in fullscreen mode. If false, lock
    *                      screen orientation into landscape mode.
    */
   public void setFullscreenModeRotation(boolean allowRotation) {
     allowFullscreenModeRotation = allowRotation;
+  }
+
+  /**
+   * Set whether or not to use immersive mode on Android 4.4+
+   * @param enable If true, use immersive sticky mode when in fullscreen mode. If false, use
+   *               standard fullscreen mode.
+   */
+  public void setImmersiveFullscreenMode(boolean enable) {
+    enableImmersiveMode = enable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
   }
 
   /**

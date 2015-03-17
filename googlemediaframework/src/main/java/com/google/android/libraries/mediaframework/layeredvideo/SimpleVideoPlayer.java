@@ -279,6 +279,15 @@ public class SimpleVideoPlayer {
   }
 
   /**
+   * Set whether or not to use immersive mode on Android 4.4+
+   * @param enable If true, use immersive sticky mode when in fullscreen mode. If false, use
+   *               standard fullscreen mode.
+   */
+  public void setImmersiveFullscreenMode(boolean enable) {
+    playbackControlLayer.setImmersiveFullscreenMode(enable);
+  }
+
+  /**
    * Set the logo with appears in the left of the top chrome.
    * @param logo The drawable which will be the logo.
    */
