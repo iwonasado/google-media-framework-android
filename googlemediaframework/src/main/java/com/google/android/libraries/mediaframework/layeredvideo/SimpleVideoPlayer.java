@@ -296,6 +296,38 @@ public class SimpleVideoPlayer {
   }
 
   /**
+   * Set the image for the pause button.
+   * @param drawable The drawable which will be the image. Set to null to use the default.
+   */
+  public void setPauseButtonImage(Drawable drawable) {
+    playbackControlLayer.setPauseButtonImage(drawable);
+  }
+
+  /**
+   * Set the image for the play button.
+   * @param drawable The drawable which will be the image. Set to null to use the default.
+   */
+  public void setPlayButtonImage(Drawable drawable) {
+    playbackControlLayer.setPlayButtonImage(drawable);
+  }
+
+  /**
+   * Set the background image for the top chrome. Setting this will ignore the chrome color.
+   * @param drawable The drawable to use as the background. Set to null to use chrome color.
+   */
+  public void setTopChromeBackground(Drawable drawable) {
+    playbackControlLayer.setTopChromeBackground(drawable);
+  }
+
+  /**
+   * Set the background image for the bottom chrome. Setting this will ignore the chrome color.
+   * @param drawable The drawable to use as the background. Set to null to use chrome color.
+   */
+  public void setBottomChromeBackground(Drawable drawable) {
+    playbackControlLayer.setBottomChromeBackground(drawable);
+  }
+
+  /**
    * Sets the color of the buttons and seek bar.
    * @param color a color derived from the @{link Color} class
    *              (ex. {@link android.graphics.Color#RED}).

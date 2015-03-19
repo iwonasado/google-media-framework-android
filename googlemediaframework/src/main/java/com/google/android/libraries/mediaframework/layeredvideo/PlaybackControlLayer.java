@@ -274,6 +274,26 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   private int seekbarColor;
 
   /**
+   * If set, use this drawable for the top chrome's background
+   */
+  private Drawable topChromeDrawable;
+
+  /**
+   * If set, use this drawable for the bottom chrome's background
+   */
+  private Drawable bottomChromeDrawable;
+
+  /**
+   * If set, use this drawable for the pause button
+   */
+  private Drawable pauseButtonDrawable;
+
+  /**
+   * If set, use this drawable for the play button
+   */
+  private Drawable playButtonDrawable;
+
+  /**
    * Displays the elapsed time into video.
    */
   private TextView currentTime;
@@ -915,6 +935,42 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   }
 
   /**
+   * Set the image for the pause button.
+   * @param drawable The drawable which will be the image. Set to null to use the default.
+   */
+  public void setPauseButtonImage(Drawable drawable) {
+    pauseButtonDrawable = drawable;
+    updatePlayPauseButton();
+  }
+
+  /**
+   * Set the image for the play button.
+   * @param drawable The drawable which will be the image. Set to null to use the default.
+   */
+  public void setPlayButtonImage(Drawable drawable) {
+    playButtonDrawable = drawable;
+    updatePlayPauseButton();
+  }
+
+  /**
+   * Set the background image for the top chrome. Setting this will ignore the chrome color.
+   * @param drawable The drawable to use as the background. Set to null to use chrome color.
+   */
+  public void setTopChromeBackground(Drawable drawable) {
+    topChromeDrawable = drawable;
+    updateColors();
+  }
+
+  /**
+   * Set the background image for the bottom chrome. Setting this will ignore the chrome color.
+   * @param drawable The drawable to use as the background. Set to null to use chrome color.
+   */
+  public void setBottomChromeBackground(Drawable drawable) {
+    bottomChromeDrawable = drawable;
+    updateColors();
+  }
+
+  /**
    * Play or pause the player.
    * @param shouldPlay If true, then the player starts playing. If false, the player pauses.
    */
@@ -1170,8 +1226,16 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       imageButton.setColorFilter(controlColor);
     }
 
-    topChrome.setBackgroundColor(chromeColor);
-    bottomChrome.setBackgroundColor(chromeColor);
+    if (topChromeDrawable != null) {
+      topChrome.setBackground(topChromeDrawable);
+    } else {
+      topChrome.setBackgroundColor(chromeColor);
+    }
+    if (bottomChromeDrawable != null) {
+      bottomChrome.setBackground(bottomChromeDrawable);
+    } else {
+      bottomChrome.setBackgroundColor(chromeColor);
+    }
   }
 
   /**
@@ -1185,9 +1249,17 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     }
 
     if (playerControl.isPlaying()) {
-      pausePlayButton.setImageResource(R.drawable.ic_action_pause_large);
+      if (pauseButtonDrawable != null) {
+        pausePlayButton.setImageDrawable(pauseButtonDrawable);
+      } else {
+        pausePlayButton.setImageResource(R.drawable.ic_action_pause_large);
+      }
     } else {
-      pausePlayButton.setImageResource(R.drawable.ic_action_play_large);
+      if (playButtonDrawable != null) {
+        pausePlayButton.setImageDrawable(playButtonDrawable);
+      } else {
+        pausePlayButton.setImageResource(R.drawable.ic_action_play_large);
+      }
     }
   }
 
