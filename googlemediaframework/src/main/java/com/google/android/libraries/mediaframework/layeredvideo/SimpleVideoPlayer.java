@@ -328,6 +328,14 @@ public class SimpleVideoPlayer {
   }
 
   /**
+   * Set the image for the back button.
+   * @param drawable The drawable which will be the image. Set to null to use the default.
+   */
+  public void setBackButtonImage(Drawable drawable) {
+    playbackControlLayer.setBackButtonImage(drawable);
+  }
+
+  /**
    * Sets the color of the buttons and seek bar.
    * @param color a color derived from the @{link Color} class
    *              (ex. {@link android.graphics.Color#RED}).
@@ -369,6 +377,15 @@ public class SimpleVideoPlayer {
    */
   public void setShowActionButtons(boolean alwaysShow) {
     playbackControlLayer.setShowActionButtons(alwaysShow);
+  }
+
+  /**
+   * Set whether or not to show the back button.
+   * @param show If true, the back button will be shown in the top chrome. If false,
+   *             it will be hidden.
+   */
+  public void setShowBackButton(boolean show) {
+    playbackControlLayer.setShowBackButton(show);
   }
 
   /**

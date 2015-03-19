@@ -294,6 +294,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   private Drawable playButtonDrawable;
 
   /**
+   * If set, use this drawable for the back button
+   */
+  private Drawable backButtonDrawable;
+
+  /**
    * Displays the elapsed time into video.
    */
   private TextView currentTime;
@@ -362,6 +367,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    * Displays the play icon when the video is playing, or the pause icon when the video is playing.
    */
   private ImageButton pausePlayButton;
+
+  /**
+   * Displays a soft back button on the far top right corner.
+   */
+  private ImageButton backButton;
 
   /**
    * Displays the loading progress bar when the video is buffering.
@@ -447,6 +457,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   private int hideTimeout;
 
   /**
+   * Whether or not to show the back button
+   */
+  private boolean showBackButton;
+
+  /**
    * When a state change happens, update the loading progress bar visibility
    */
   private ExoplayerWrapper.PlaybackListener playbackListener
@@ -488,6 +503,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     this.allowFullscreenModeRotation = false;
     this.enableImmersiveMode = false;
     this.hideTimeout = DEFAULT_TIMEOUT_MS;
+    this.showBackButton = false;
     actionButtons = new ArrayList<ImageButton>();
   }
 
@@ -971,6 +987,15 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   }
 
   /**
+   * Set the image for the back button.
+   * @param drawable The drawable which will be the image. Set to null to use the default.
+   */
+  public void setBackButtonImage(Drawable drawable) {
+    backButtonDrawable = drawable;
+    updateBackButton();
+  }
+
+  /**
    * Play or pause the player.
    * @param shouldPlay If true, then the player starts playing. If false, the player pauses.
    */
@@ -1011,6 +1036,16 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   }
 
   /**
+   * Set whether or not to show the back button.
+   * @param show If true, the back button will be shown in the top chrome. If false,
+   *             it will be hidden.
+   */
+  public void setShowBackButton(boolean show) {
+    showBackButton = show;
+    updateBackButton();
+  }
+
+  /**
    * Set the timeout duration before hiding player controls after they are shown.
    * @param timeoutInMilliseconds Timeout duration in milliseconds
    */
@@ -1025,6 +1060,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     // Bind fields to UI elements.
     pausePlayButton = (ImageButton) view.findViewById(R.id.pause);
     loadingBar = (ProgressBar) view.findViewById(R.id.loading_bar);
+    backButton = (ImageButton) view.findViewById(R.id.back);
     fullscreenButton = (ImageButton) view.findViewById((R.id.fullscreen));
     seekBar = (SeekBar) view.findViewById(R.id.mediacontroller_progress);
     videoTitleView = (TextView) view.findViewById(R.id.video_title);
@@ -1043,6 +1079,14 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
         togglePlayPause();
         show(hideTimeout);
       }
+    });
+
+    // The back button will simulate a hardware/software back key press
+    backButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          getLayerManager().getActivity().onBackPressed();
+        }
     });
 
     if (fullscreenCallback == null) {
@@ -1260,6 +1304,23 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       } else {
         pausePlayButton.setImageResource(R.drawable.ic_action_play_large);
       }
+    }
+  }
+
+  /**
+   * Update the icon and visibility state of the back button
+   */
+  public void updateBackButton() {
+    if (showBackButton) {
+      backButton.setVisibility(View.VISIBLE);
+    } else {
+      backButton.setVisibility(View.GONE);
+    }
+
+    if (backButtonDrawable != null) {
+      backButton.setImageDrawable(backButtonDrawable);
+    } else {
+      backButton.setImageResource(R.drawable.ic_action_go_back);
     }
   }
 
