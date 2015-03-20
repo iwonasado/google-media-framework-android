@@ -101,6 +101,17 @@ public class MainActivity extends Activity implements PlaybackControlLayer.Fulls
   }
 
   /**
+   * Pause playback when activity is not in focus
+   */
+  @Override
+  protected void onPause() {
+    super.onPause();
+    if (imaPlayer != null) {
+      imaPlayer.pause();
+    }
+  }
+
+  /**
    * Release the video player when the activity is destroyed.
    */
   @Override
