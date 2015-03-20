@@ -27,7 +27,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -904,14 +903,14 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   public void setFullscreenCallback(FullscreenCallback fullscreenCallback) {
     this.fullscreenCallback = fullscreenCallback;
-    setFullscreenButtonVisibility(fullscreenCallback != null);
+    setShowFullscreenButton(fullscreenCallback != null);
   }
 
   /**
    * Set the visibility of the fullscreen button.
    * @param show If true, show the fullscreen mode button. If false, hide it.
    */
-  public void setFullscreenButtonVisibility(boolean show) {
+  public void setShowFullscreenButton(boolean show) {
     if (fullscreenButton != null) {
       if (show) {
         fullscreenButton.setVisibility(View.VISIBLE);
@@ -926,7 +925,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    * @param allowRotation If true, allows screen rotation when in fullscreen mode. If false, lock
    *                      screen orientation into landscape mode.
    */
-  public void setFullscreenModeRotation(boolean allowRotation) {
+  public void setAllowFullscreenRotation(boolean allowRotation) {
     allowFullscreenModeRotation = allowRotation;
   }
 
@@ -935,7 +934,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    * @param enable If true, use immersive sticky mode when in fullscreen mode. If false, use
    *               standard fullscreen mode.
    */
-  public void setImmersiveFullscreenMode(boolean enable) {
+  public void setEnableImmersiveFullscreenMode(boolean enable) {
     enableImmersiveMode = enable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
   }
 

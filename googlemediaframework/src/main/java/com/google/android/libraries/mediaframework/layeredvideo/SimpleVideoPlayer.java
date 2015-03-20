@@ -206,8 +206,8 @@ public class SimpleVideoPlayer {
    * Set the visibility of the fullscreen button
    * @param show Set to true to show button, false to hide it
    */
-  public void setFullscreenButtonVisibility(boolean show) {
-    playbackControlLayer.setFullscreenButtonVisibility(show);
+  public void setShowFullscreenButton(boolean show) {
+    playbackControlLayer.setShowFullscreenButton(show);
   }
 
   /**
@@ -215,8 +215,8 @@ public class SimpleVideoPlayer {
    * @param allowRotation If true, allows screen rotation when in fullscreen mode. If false, lock
    *                      screen orientation into landscape mode.
    */
-  public void setFullscreenModeRotation(boolean allowRotation) {
-    playbackControlLayer.setFullscreenModeRotation(allowRotation);
+  public void setAllowFullscreenRotation(boolean allowRotation) {
+    playbackControlLayer.setAllowFullscreenRotation(allowRotation);
   }
 
   /**
@@ -283,8 +283,8 @@ public class SimpleVideoPlayer {
    * @param enable If true, use immersive sticky mode when in fullscreen mode. If false, use
    *               standard fullscreen mode.
    */
-  public void setImmersiveFullscreenMode(boolean enable) {
-    playbackControlLayer.setImmersiveFullscreenMode(enable);
+  public void setEnableImmersiveFullscreenMode(boolean enable) {
+    playbackControlLayer.setEnableImmersiveFullscreenMode(enable);
   }
 
   /**
