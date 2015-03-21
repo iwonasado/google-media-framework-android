@@ -33,4 +33,12 @@ limitations under the License.
 
     <style name="LoadingProgressBar" parent="android:Widget.Holo.ProgressBar" />
 
+    <style name="PlaybackControlText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:shadowColor">@color/transparent_black_hex_8</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">5</item>
+    </style>
+
 </resources>
